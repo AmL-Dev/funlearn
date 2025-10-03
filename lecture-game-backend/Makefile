@@ -7,7 +7,7 @@ playground:
 	@echo "==============================================================================="
 	@echo "| 🚀 Starting your agent playground...                                        |"
 	@echo "|                                                                             |"
-	@echo "| 💡 Try asking: What's the weather in San Francisco?                         |"
+	@echo "| 💡 Try asking: Generate a math quiz game or Create a physics simulation      |"
 	@echo "|                                                                             |"
 	@echo "| 🔍 IMPORTANT: Select the 'app' folder to interact with your agent.          |"
 	@echo "==============================================================================="
@@ -17,7 +17,7 @@ playground:
 # Usage: make backend [IAP=true] [PORT=8080] - Set IAP=true to enable Identity-Aware Proxy, PORT to specify container port
 backend:
 	PROJECT_ID=$$(gcloud config get-value project) && \
-	gcloud beta run deploy haiku-app \
+	gcloud beta run deploy lecture-game-backend \
 		--source . \
 		--memory "4Gi" \
 		--project $$PROJECT_ID \

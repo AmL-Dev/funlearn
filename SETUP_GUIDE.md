@@ -1,104 +1,91 @@
-# 🚀 Complete Setup Guide: Lecture Game Generator
+# Complete Setup Guide: Lecture Game Generator
 
-This guide helps you run the complete Lecture Game Generator system with both the Next.js frontend and the modified Google ADK backend.
+Full-stack application that converts lecture ISBNs into educational games using Next.js frontend and Google ADK backend.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 funlearn/
-├── haiku-app/                    # Modified Google ADK backend
-│   ├── app/
-│   │   ├── agent.py             # Main agent (now generates games!)
-│   │   ├── server.py            # FastAPI server
-│   │   └── sub_agents/
-│   │       └── game_validator/  # New game validation agent
-├── lecture-game-app/            # Next.js frontend
-│   ├── src/app/
-│   │   ├── page.tsx             # Main UI
-│   │   └── api/                 # API routes
-└── SETUP_GUIDE.md               # This file
+├── lecture-game-backend/ # AI Game Generation Backend (ADK)
+│   ├── app/game_generator.py # Main game generation agent
+│   └── app/server.py     # FastAPI server
+├── lecture-game-app/     # Web Frontend (Next.js)
+│   ├── src/app/page.tsx  # Main UI
+│   └── src/app/api/      # API endpoints
+└── SETUP_GUIDE.md
 ```
 
-## 🛠️ Prerequisites
+## Prerequisites
 
-Before starting, ensure you have:
-
-- **Node.js** (v18 or later) - [Download](https://nodejs.org/)
+- **Node.js** (v18+) - [Download](https://nodejs.org/)
 - **Python** (v3.10+) - [Download](https://python.org/)
-- **uv** (Python package manager) - [Install Guide](https://docs.astral.sh/uv/getting-started/installation/)
+- **uv** - [Install Guide](https://docs.astral.sh/uv/getting-started/installation/)
 - **Google Cloud SDK** - [Install Guide](https://cloud.google.com/sdk/docs/install)
 
-## 🚶‍♂️ Step-by-Step Setup
+## Setup Instructions
 
-### 1. Backend Setup (Modified ADK Agent)
+### 1. Backend Setup
 
 ```bash
-# Navigate to the haiku-app directory
-cd haiku-app
+cd lecture-game-backend
 
-# Install Python dependencies
+# Install dependencies
 make install
 
-# Set up Google Cloud credentials
+# Configure Google Cloud
 gcloud auth login
 gcloud auth application-default login
-
-# Configure your project (replace with your GCP project ID)
 export GOOGLE_CLOUD_PROJECT=your-project-id
 ```
 
-**What we modified:**
-- Changed `app/agent.py` from haiku generator → JavaScript game generator
-- Created `app/sub_agents/game_validator/` for code validation
-- Updated agent prompts to focus on educational game generation
+**Core Components:**
+- `app/game_generator.py` - Main game generation agent
+- `app/sub_agents/game_validator/` - Code validation system
 
-### 2. Frontend Setup (Next.js App)
+### 2. Frontend Setup
 
 ```bash
-# Navigate to the lecture-game-app directory
-cd ../lecture-game-app
+cd lecture-game-app
 
 # Install dependencies
 npm install
 
-# Set up environment variables
+# Environment setup (optional)
 npm run setup
 ```
 
-**Features included:**
-- PDF upload and text extraction interface
-- Beautiful modern UI with Tailwind CSS
+**Features:**
+- PDF upload and text extraction
+- Modern UI with Tailwind CSS
 - Secure iframe game execution
-- Fallback game generator (works without backend)
+- Fallback generator (works without backend)
 
-### 3. Run Both Applications
+### 3. Running Both Applications
 
-**Terminal 1 - Start Backend:**
+**Start Backend:**
 ```bash
-cd haiku-app
-make local-backend
+cd lecture-game-backend && make local-backend
+# Runs on: http://localhost:8000
 ```
-✅ Backend runs on: `http://localhost:8000`
 
-**Terminal 2 - Start Frontend:**
+**Start Frontend:**
 ```bash
-cd lecture-game-app
-npm run dev:local
+cd lecture-game-app && npm run dev:local
+# Runs on: http://localhost:3001
 ```
-✅ Frontend runs on: `http://localhost:3001`
 
-## 🎮 Usage
+## Usage
 
-1. **Access the App**: Visit `http://localhost:3001`
-2. **Upload PDF**: Select a lecture PDF file
-3. **Extract Text**: Click "Extract Text" to process the PDF
-4. **Generate Game**: Click "Generate Game" to create an interactive game
-5. **Play**: The generated game runs directly in the browser!
+1. Visit `http://localhost:3001`
+2. Upload a lecture PDF
+3. Click "Extract Text" 
+4. Click "Generate Game"
+5. Play the generated game in your browser
 
-## 🔧 Configuration Options
+## Configuration
 
 ### Backend Configuration
-Edit `haiku-app/app/agent.py` to customize:
+Edit `lecture-game-backend/app/game_generator.py` to customize:
 - Game types generated
 - Code validation rules
 - AI model parameters
@@ -109,122 +96,58 @@ Edit `lecture-game-app/.env.local`:
 NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
 ```
 
-## 🧪 Testing
+## Testing
 
-### Test PDF Processing
+### Frontend Testing
 ```bash
-cd lecture-game-app
-npm run dev:local
-# Upload any PDF file and test text extraction
+cd lecture-game-app && npm run dev:local
+# Upload PDF and test functionality
 ```
 
-### Test Backend Without PDF
+### Backend Testing
 ```bash
-cd haiku-app
-make local-backend
-# Visit http://localhost:8000/docs for API documentation
+cd lecture-game-backend && make local-backend
+# Visit http://localhost:8000/docs for API docs
 ```
 
-### Test AI Game Generation
-- Use the frontend to upload a PDF
-- Check if game generation uses backend (check network tab for API calls)
-- Fallback generator should work even if backend is offline
+## Troubleshooting
 
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**1. "Backend Connection Failed"**
+**Backend Connection Issues:**
 - Ensure `make local-backend` is running
 - Check `NEXT_PUBLIC_BACKEND_URL` in `.env.local`
-- App automatically falls back to local generation
 
-**2. "PDF Upload Not Working"**
+**PDF Upload Issues:**
 - Ensure PDF is not password-protected
-- Try smaller PDF files first
+- Try smaller files first
 - Check browser console for errors
 
-**3. "Game Not Displaying"**
-- Check that the generated JavaScript code is valid
-- Look for syntax errors in browser console
-- Iframe sandbox should isolate execution safely
-
-**4. "Python/UV Issues"**
+**Authentication Issues:**
 ```bash
-# Reinstall Python dependencies
-cd haiku-app
-make install
-
-# Check Python version (should be 3.10+)
-python --version
-```
-
-**5. "Google Cloud Authentication Issues"**
-```bash
-# Re-authenticate
 gcloud auth login
 gcloud auth application-default login
 gcloud config set project YOUR-PROJECT-ID
 ```
 
-## 🔄 Development Mode
+## Development
 
-### Hot Reload (Recommended)
 Both backend and frontend support hot reload:
-- Backend: `make local-backend` (auto-restarts on file changes)
-- Frontend: `npm run dev:local` (Hot reload with Turbopack)
+- Backend: `make local-backend` (auto-restarts on changes)
+- Frontend: `npm run dev:local` (hot reload)
 
-### Making Changes
+## Deployment
 
-**Backend Changes:**
-1. Modify `haiku-app/app/agent.py`
-2. Backend automatically restarts
-3. Test via frontend or API docs
+### Quick Deploy
+```bash
+# Backend to Cloud Run
+cd lecture-game-backend && make backend
 
-**Frontend Changes:**
-1. Modify `lecture-game-app/src/app/`
-2. Pages auto-reload in browser
-3. No restart needed
+# Frontend to Vercel (optional)
+cd lecture-game-app && npm run build
+```
 
-## 🚀 Production Deployment
-
-### Option 1: Vercel + Google Cloud Run
-- Deploy frontend to Vercel
-- Deploy backend to Google Cloud Run
-- Update `NEXT_PUBLIC_BACKEND_URL`
-
-### Option 2: Full Google Cloud
-- Use existing Terraform setup in `haiku-app/deployment/`
-- Deploy both frontend and backend to Cloud Run
-- Configure custom domains
-
-## 📊 Monitoring
-
-The backend includes built-in monitoring:
-- **Cloud Logging**: All API requests and agent interactions
-- **Cloud Tracing**: Performance monitoring
-- **BigQuery**: Long-term analytics storage
-
-## 🎯 Next Steps
-
-1. **Enhance Game Types**: Add more sophisticated game mechanics
-2. **User Accounts**: Add authentication and game history
-3. **Collaboration**: Allow multiple users to play games together
-4. **Analytics**: Track learning effectiveness
-5. **Mobile**: Optimize for mobile devices
-
-## 📝 Key Files Modified
-
-### Backend Changes
-- `haiku-app/app/agent.py` - Main agent prompts and tools
-- `haiku-app/app/sub_agents/game_validator/agent.py` - New validation system
-- Existing `server.py` and infrastructure remain unchanged
-
-### Frontend Created
-- `lecture-game-app/src/app/page.tsx` - Complete UI implementation
-- `lecture-game-app/src/app/api/extract-text/route.ts` - PDF processing
-- `lecture-game-app/src/app/api/generate-game/route.ts` - Backend integration
+### Production Setup
+See [lecture-game-backend/deployment/README.md](lecture-game-backend/deployment/README.md) for full infrastructure setup.
 
 ---
 
-**🎉 You're all set! Start by uploading a PDF lecture and watching it transform into fascinating educational games!**
+**Ready to transform your lectures into educational games!**

@@ -32,7 +32,7 @@ allow_origins = (
     os.getenv("ALLOW_ORIGINS", "").split(",") if os.getenv("ALLOW_ORIGINS") else None
 )
 
-bucket_name = f"gs://{project_id}-haiku-app-logs"
+bucket_name = f"gs://{project_id}-lecture-game-backend-logs"
 create_bucket_if_not_exists(
     bucket_name=bucket_name, project=project_id, location="us-central1"
 )
@@ -53,8 +53,8 @@ app: FastAPI = get_fast_api_app(
     allow_origins=allow_origins,
     session_service_uri=session_service_uri,
 )
-app.title = "haiku-app"
-app.description = "API for interacting with the Agent haiku-app"
+app.title = "lecture-game-backend"
+app.description = "API for the lecture game generator agent"
 
 
 @app.post("/feedback")

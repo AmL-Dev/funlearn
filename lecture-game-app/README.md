@@ -1,210 +1,106 @@
-# 📚 Lecture Game Generator
+# Lecture Game Generator Frontend
 
-A Next.js application that transforms lecture PDFs into interactive JavaScript educational games using AI-powered agentic systems.
+Next.js web application that transforms lecture PDFs into interactive JavaScript educational games using AI-powered backend systems.
 
-## 🚀 Features
+## Features
 
-- **PDF Upload & Text Extraction**: Upload lecture PDFs and extract text automatically
-- **AI Game Generation**: Uses Google's Agent Development Kit (ADK) to generate educational games
-- **Interactive Game Playground**: Execute generated JavaScript games in a secure iframe sandbox
-- **Modern UI**: Beautiful, responsive interface built with Tailwind CSS
-- **Real-time Generation**: Fast PDF processing and game generation
+- **PDF Upload**: Upload lecture PDFs and extract text automatically
+- **AI Game Generation**: Connects to Google ADK backend for game creation
+- **Interactive Game Playground**: Secure iframe execution of generated games
+- **Modern UI**: Responsive interface with Tailwind CSS
+- **Fallback Generator**: Works offline with local game generation
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS
-- **PDF Processing**: pdf-parse library
-- **AI Backend**: Google ADK with Gemini 2.5 Flash model
+- **PDF Processing**: pdf-parse library  
+- **AI Backend**: Google ADK with Gemini models
 - **Game Execution**: Secure iframe sandbox
 
-## 📦 Installation
+## Installation
 
-1. **Clone and Install Dependencies**:
-   ```bash
-   cd lecture-game-app
-   npm install
-   ```
+```bash
+npm install
+```
 
-2. **Environment Setup**:
-   ```bash
-   npm run setup
-   ```
-   This creates a `.env.local` file with default backend URL.
+## Environment Setup
 
-3. **Configure Backend URL** (Optional):
-   Edit `.env.local` to point to your backend server:
-   ```env
-   NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
-   ```
+```bash
+npm run setup
+```
+Creates `.env.local` with default backend URL.
 
-## 🚶‍♂️ Quick Start
+## Quick Start
 
-### Option 1: Standalone Mode
-The app includes a fallback game generator that works without the backend:
-
+### Standalone Mode
 ```bash
 npm run dev:local
 ```
+Visit `http://localhost:3001` - includes fallback game generator.
 
-Visit `http://localhost:3001` and upload a PDF to create a quiz game.
+### With Backend
+1. Start backend: `cd ../lecture-game-backend && make local-backend`
+2. Start frontend: `npm run dev:local`
+3. Cloud Run service: `https://your-service.run.app/api/extract-text`
+4. Frontend: `http://localhost:3000`
 
-### Option 2: Full Setup with Backend
-1. **Start the ADK Backend**:
-   ```bash
-   cd ../haiku-app
-   make local-backend
-   ```
+## How It Works
 
-2. **Start the Frontend**:
-   ```bash
-   npm run dev:local
-   ```
+1. **Upload PDF**: Drag & drop or select lecture PDF
+2. **Extract Text**: System processes PDF using pdf-parse
+3. **Generate Game**: AI analyzes content and creates JavaScript games
+4. **Play**: Games execute in secure iframe sandbox
 
-3. **Access the Application**:
-   - Frontend: `http://localhost:3001`
-   - Backend: `http://localhost:8000`
+## Game Types
 
-## 🎮 How It Works
-
-### Step 1: Upload PDF
-- Drag and drop or select a PDF lecture file
-- The system extracts text using pdf-parse
-
-### Step 2: Extract Text
-- Automatically processes the PDF and extracts readable text
-- Displays a preview of the extracted content
-
-### Step 3: Generate Game
-- Sends extracted text to the AI agent
-- The agent analyzes the content and generates appropriate JavaScript games
-- Supports multiple game types: quizzes, memory games, puzzles, simulations
-
-### Step 4: Play & Enjoy
-- Generated games execute in a secure iframe
-- Interactive and engaging learning experiences
-- Completely self-contained HTML/CSS/JavaScript
-
-## 🎯 Game Types
-
-The AI agent can generate various educational games based on content:
-
-- **Quiz Games**: Multiple choice and fill-in-the-blank questions
-- **Memory Games**: Concept matching and identification
+- **Quiz Games**: Multiple choice and fill-in-the-blank
+- **Memory Games**: Concept matching
 - **Puzzle Games**: Problem-solving scenarios
-- **Simulation Games**: Interactive process demonstrations
+- **Simulation Games**: Interactive demonstrations
 
-## 🔧 Development
+## Development
 
-### Project Structure
 ```
 src/
 ├── app/
-│   ├── api/
-│   │   ├── extract-text/     # PDF text extraction endpoint
-│   │   └── generate-game/     # Game generation endpoint
-│   ├── page.tsx              # Main application page
-│   └── layout.tsx            # App layout
-├── components/               # Reusable components (if any)
-└── styles/                   # Global styles
+│   ├── api/              # API endpoints
+│   │   ├── extract-text/  # PDF processing
+│   │   └── generate-game/ # Game generation
+│   └── page.tsx          # Main UI
 ```
 
-### API Endpoints
+## API Endpoints
 
-#### POST `/api/extract-text`
-Extracts text from uploaded PDF files.
+- `POST /api/extract-text` - Extract text from uploaded PDFs
+- `POST /api/generate-game` - Generate JavaScript games from content
 
-**Request**: `FormData` with PDF file
-**Response**: 
-```json
-{
-  "text": "extracted text content",
-  "pages": 5
-}
-```
-
-#### POST `/api/generate-game`
-Generates JavaScript games from lecture content.
-
-**Request**: 
-```json
-{
-  "lectureContent": "text to convert into a game"
-}
-```
-
-**Response**: 
-```json
-{
-  "gameScript": "JavaScript game code",
-  "message": "Game generated successfully",
-  "source": "backend"
-}
-```
-
-## 🔒 Security
-
-- Games execute in isolated iframes
-- No direct file system access
-- Sanitized JavaScript execution environment
-- Server-side PDF processing
-
-## 🧪 Testing
-
-```bash
-# Run linting
-npm run lint
-
-# Build for production
-npm run build
-
-# Start production server
-npm run start
-```
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-```bash
-npm run build
-# Deploy via Vercel CLI or GitHub integration
-```
-
-### Traditional Deployment
-```bash
-npm run build
-npm run start
-```
-
-## 🐛 Troubleshooting
-
-### Backend Connection Issues
-- Ensure the ADK backend is running on the correct port
-- Check `.env.local` for correct `NEXT_PUBLIC_BACKEND_URL`
-- The app will automatically fall back to local generation if backend is unavailable
-
-### PDF Processing Issues
-- Ensure PDF is not password-protected
-- Try with smaller PDF files first
-- Check browser console for error details
-
-## 📝 Environment Variables
+## Environment Variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `NEXT_PUBLIC_BACKEND_URL` | FastAPI backend URL | `http://localhost:8000` |
+| `NEXT_PUBLIC_BACKEND_URL` | Backend API URL | `http://localhost:8000` |
 
-## 🤝 Contributing
+## Development Commands
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+```bash
+npm run dev:local    # Development server
+npm run build        # Production build
+npm run lint         # Code linting
+npm run setup        # Create .env.local
+```
 
-## 📄 License
+## Troubleshooting
 
-This project is part of a hackathon demonstration. Please check with project maintainers for licensing terms.
+**Backend Connection Issues:**
+- Ensure ADK backend is running: `cd ../lecture-game-backend && make local-backend`
+- Check `.env.local` for correct `NEXT_PUBLIC_BACKEND_URL`
+- App automatically falls back to local generation if backend unavailable
+
+**PDF Issues:**
+- Ensure PDF is not password-protected
+- Try smaller files first
+- Check browser console for errors
 
 ---
 
-**Ready to transform your lectures into interactive learning experiences? Upload your PDF and let the AI create engaging educational games! 🎮**
+**Upload your PDF and start creating interactive educational games!**

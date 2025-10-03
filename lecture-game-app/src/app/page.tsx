@@ -8,6 +8,7 @@ export default function Home() {
   const [extractedText, setExtractedText] = useState('');
   const [gameScript, setGameScript] = useState('');
   const [error, setError] = useState('');
+  const [fullscreenGame, setFullscreenGame] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,6 +77,105 @@ export default function Home() {
       setIsUploading(false);
     }
   };
+
+  // If game is in fullscreen mode, show only the game
+  if (fullscreenGame && gameScript) {
+    return (
+      <div className="fixed inset-0 bg-black">
+        <div className="absolute top-4 left-4 right-4 flex justify-between items-center">
+          <h1 className="text-white font-bold text-xl">🎮 Your Interactive Game</h1>
+          <button
+            onClick={() => setFullscreenGame(false)}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+          >
+            Exit Fullscreen
+          </button>
+        </div>
+        <iframe
+          srcDoc={`
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Lecture Game</title>
+                <style>
+                  body {
+                    margin: 0;
+                    padding: 20px;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    min-height: 100vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    overflow: hidden;
+                  }
+                  .game-container {
+                    text-align: center;
+                    max-width: 600px;
+                    width: 100%;
+                  }
+                  button {
+                    background: rgba(255,255,255,0.2);
+                    border: 2px solid rgba(255,255,255,0.3);
+                    color: white;
+                    padding: 16px 32px;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    font-size: 18px;
+                    margin: 12px;
+                    transition: all 0.3s ease;
+                    min-width: 120px;
+                  }
+                  button:hover {
+                    background: rgba(255,255,255,0.3);
+                    transform: translateY(-3px);
+                  }
+                  button:disabled {
+                    opacity: 0.6;
+                  }
+                  .score {
+                    font-size: 32px;
+                    margin: 30px 0;
+                    font-weight: bold;
+                  }
+                  .question {
+                    font-size: 24px;
+                    margin: 30px 0;
+                    line-height: 1.6;
+                    font-weight: 500;
+                  }
+                  .answer-buttons {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 16px;
+                    margin: 30px 0;
+                  }
+                  .hidden {
+                    display: none;
+                  }
+                  h2 {
+                    font-size: 28px;
+                    margin: 20px 0;
+                  }
+                </style>
+              </head>
+              <body>
+                <script>
+                  ${gameScript}
+                </script>
+              </body>
+            </html>
+          `}
+          className="w-screen h-screen border-0"
+          title="Lecture Game Fullscreen"
+          style={{ marginTop: '60px', height: 'calc(100vh - 60px)' }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -152,9 +252,17 @@ export default function Home() {
           {/* Game Display Section */}
           {gameScript && (
             <div>
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                🎮 Step 3: Your Interactive Game
-              </h2>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-semibold text-gray-800">
+                  🎮 Step 3: Your Interactive Game
+                </h2>
+                <button
+                  onClick={() => setFullscreenGame(true)}
+                  className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                >
+                  🔍 View Fullscreen
+                </button>
+              </div>
               <div className="border-2 border-gray-200 rounded-lg overflow-hidden">
                 <div className="bg-gray-100 px-4 py-2 border-b border-gray-200">
                   <h3 className="font-medium text-gray-800">Game Preview</h3>
